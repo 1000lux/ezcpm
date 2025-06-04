@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1분 명상 타이머</title>
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        font-family: 'Arial', sans-serif;
+    }
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(135deg, #ff0000, #ffea00);
+    }
+    #timer {
+        font-size: 8rem;
+        color: white;
+        font-weight: bold;
+        animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+        0% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.1); opacity: 0.8; }
+        100% { transform: scale(1); opacity: 1; }
+    }
+</style>
+</head>
+<body>
+<div id="timer">60</div>
+<script>
+let seconds = 60;
+const timerEl = document.getElementById('timer');
+const interval = setInterval(() => {
+    seconds--;
+    if (seconds >= 0) {
+        timerEl.textContent = seconds;
+        if (seconds === 0) {
+            playBeep();
+            clearInterval(interval);
+        }
+    }
+}, 1000);
+function playBeep(){
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const oscillator = ctx.createOscillator();
+    const gain = ctx.createGain();
+    oscillator.type = 'sine';
+    oscillator.frequency.setValueAtTime(440, ctx.currentTime);
+    oscillator.connect(gain);
+    gain.connect(ctx.destination);
+    gain.gain.setValueAtTime(0.05, ctx.currentTime);
+    oscillator.start();
+    oscillator.stop(ctx.currentTime + 0.5);
+}
+</script>
+</body>
+</html>
